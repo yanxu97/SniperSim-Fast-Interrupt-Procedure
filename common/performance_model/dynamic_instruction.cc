@@ -7,7 +7,9 @@
 
 Allocator* DynamicInstruction::createAllocator()
 {
-   return new TypedAllocator<DynamicInstruction, 1024>();
+    std::cerr << "[IAN's TESTING] dynamic_instruction.cc: CREEPY MOVEMENT: createAllocator" << std::endl;
+
+    return new TypedAllocator<DynamicInstruction, 1024>();
 }
 
 DynamicInstruction::~DynamicInstruction()

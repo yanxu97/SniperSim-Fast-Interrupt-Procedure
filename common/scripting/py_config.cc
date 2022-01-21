@@ -5,73 +5,81 @@
 static PyObject *
 getConfigString(PyObject *self, PyObject *args)
 {
-   const char *key = NULL;
-   SInt32 index = -1;
-   String result = "";
+    std::cerr << "[IAN's TESTING] py_bbv.cc: CREEPY MOVEMENT: getConfigString" << std::endl;
 
-   if (!PyArg_ParseTuple(args, "s|i", &key, &index))
-      return NULL;
+    const char* key = NULL;
+    SInt32 index = -1;
+    String result = "";
 
-   if (index != -1)
-      result = Sim()->getCfg()->getStringArray(key, index);
-   else
-      result = Sim()->getCfg()->getString(key);
+    if (!PyArg_ParseTuple(args, "s|i", &key, &index))
+        return NULL;
 
-   return PyString_FromString(result.c_str());
+    if (index != -1)
+        result = Sim()->getCfg()->getStringArray(key, index);
+    else
+        result = Sim()->getCfg()->getString(key);
+
+    return PyString_FromString(result.c_str());
 }
 
 static PyObject *
 getConfigInt(PyObject *self, PyObject *args)
 {
-   const char *key = NULL;
-   SInt32 index = -1;
-   SInt64 result = 0;
+    std::cerr << "[IAN's TESTING] py_bbv.cc: CREEPY MOVEMENT: getConfigInt" << std::endl;
 
-   if (!PyArg_ParseTuple(args, "s|i", &key, &index))
-      return NULL;
+    const char* key = NULL;
+    SInt32 index = -1;
+    SInt64 result = 0;
 
-   if (index != -1)
-      result = Sim()->getCfg()->getIntArray(key, index);
-   else
-      result = Sim()->getCfg()->getInt(key);
+    if (!PyArg_ParseTuple(args, "s|i", &key, &index))
+        return NULL;
 
-   return PyLong_FromLongLong(result);
+    if (index != -1)
+        result = Sim()->getCfg()->getIntArray(key, index);
+    else
+        result = Sim()->getCfg()->getInt(key);
+
+    return PyLong_FromLongLong(result);
 }
 
 static PyObject *
 getConfigFloat(PyObject *self, PyObject *args)
 {
-   const char *key = NULL;
-   SInt32 index = -1;
-   double result = 0;
+    std::cerr << "[IAN's TESTING] py_bbv.cc: CREEPY MOVEMENT: getConfigFloat" << std::endl;
 
-   if (!PyArg_ParseTuple(args, "s|i", &key, &index))
-      return NULL;
+    const char* key = NULL;
+    SInt32 index = -1;
+    double result = 0;
 
-   if (index != -1)
-      result = Sim()->getCfg()->getFloatArray(key, index);
-   else
-      result = Sim()->getCfg()->getFloat(key);
+    if (!PyArg_ParseTuple(args, "s|i", &key, &index))
+        return NULL;
 
-   return PyFloat_FromDouble(result);
+    if (index != -1)
+        result = Sim()->getCfg()->getFloatArray(key, index);
+    else
+        result = Sim()->getCfg()->getFloat(key);
+
+    return PyFloat_FromDouble(result);
 }
 
 static PyObject *
 getConfigBool(PyObject *self, PyObject *args)
 {
-   const char *key = NULL;
-   SInt32 index = -1;
-   bool result = false;
+    std::cerr << "[IAN's TESTING] py_bbv.cc: CREEPY MOVEMENT: getConfigBool" << std::endl;
 
-   if (!PyArg_ParseTuple(args, "s|i", &key, &index))
-      return NULL;
+    const char* key = NULL;
+    SInt32 index = -1;
+    bool result = false;
 
-   if (index != -1)
-      result = Sim()->getCfg()->getBoolArray(key, index);
-   else
-      result = Sim()->getCfg()->getBool(key);
+    if (!PyArg_ParseTuple(args, "s|i", &key, &index))
+        return NULL;
 
-   return PyBool_FromLong(result);
+    if (index != -1)
+        result = Sim()->getCfg()->getBoolArray(key, index);
+    else
+        result = Sim()->getCfg()->getBool(key);
+
+    return PyBool_FromLong(result);
 }
 
 
@@ -85,13 +93,15 @@ static PyMethodDef PyConfigMethods[] = {
 
 void HooksPy::PyConfig::setup(void)
 {
-   PyObject *pModule = Py_InitModule("sim_config", PyConfigMethods);
+    std::cerr << "[IAN's TESTING] py_bbv.cc: CREEPY MOVEMENT: setup" << std::endl;
 
-   PyObject *pOutputdir = PyString_FromString(Sim()->getConfig()->formatOutputFileName("").c_str());
-   PyObject_SetAttrString(pModule, "output_dir", pOutputdir);
-   Py_DECREF(pOutputdir);
+    PyObject* pModule = Py_InitModule("sim_config", PyConfigMethods);
 
-   PyObject *pNcores = PyInt_FromLong(Sim()->getConfig()->getApplicationCores());
-   PyObject_SetAttrString(pModule, "ncores", pNcores);
-   Py_DECREF(pNcores);
+    PyObject* pOutputdir = PyString_FromString(Sim()->getConfig()->formatOutputFileName("").c_str());
+    PyObject_SetAttrString(pModule, "output_dir", pOutputdir);
+    Py_DECREF(pOutputdir);
+
+    PyObject* pNcores = PyInt_FromLong(Sim()->getConfig()->getApplicationCores());
+    PyObject_SetAttrString(pModule, "ncores", pNcores);
+    Py_DECREF(pNcores);
 }

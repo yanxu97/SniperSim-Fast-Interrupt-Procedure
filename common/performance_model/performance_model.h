@@ -88,7 +88,11 @@ protected:
    friend class FastforwardPerformanceModel;
 
    void setElapsedTime(SubsecondTime time);
-   void incrementElapsedTime(SubsecondTime time) { m_elapsed_time.addLatency(time); }
+   void incrementElapsedTime(SubsecondTime time)
+   {
+       std::cerr << "[IAN's TESTING] performance_model.h: CREEPY MOVEMENT: incrementElapsedTime" << std::endl;
+       m_elapsed_time.addLatency(time);
+   }
    void incrementIdleElapsedTime(SubsecondTime time);
 
    #ifdef ENABLE_PERF_MODEL_OWN_THREAD

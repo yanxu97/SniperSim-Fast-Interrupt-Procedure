@@ -1,8 +1,8 @@
 #ifndef __CHEETAH_MANAGER_H
 #define __CHEETAH_MANAGER_H
 
-#include "fixed_types.h"
 #include "core.h"
+#include "fixed_types.h"
 
 class CheetahModel;
 

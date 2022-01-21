@@ -128,14 +128,16 @@ getStatsGetter(PyObject *self, PyObject *args)
 static PyObject *
 writeStats(PyObject *self, PyObject *args)
 {
-   const char *prefix = NULL;
+    std::cerr << "[IAN's TESTING] py_stats.cc: CREEPY MOVEMENT: writeStats" << std::endl;
 
-   if (!PyArg_ParseTuple(args, "s", &prefix))
-      return NULL;
+    const char* prefix = NULL;
 
-   Sim()->getStatsManager()->recordStats(prefix);
+    if (!PyArg_ParseTuple(args, "s", &prefix))
+        return NULL;
 
-   Py_RETURN_NONE;
+    Sim()->getStatsManager()->recordStats(prefix);
+
+    Py_RETURN_NONE;
 }
 
 
@@ -145,15 +147,17 @@ writeStats(PyObject *self, PyObject *args)
 
 static UInt64 statsCallback(String objectName, UInt32 index, String metricName, UInt64 _pFunc)
 {
-   PyObject *pFunc = (PyObject*)_pFunc;
-   PyObject *pResult = HooksPy::callPythonFunction(pFunc, Py_BuildValue("(sls)", objectName.c_str(), index, metricName.c_str()));
+    std::cerr << "[IAN's TESTING] py_stats.cc: CREEPY MOVEMENT: statsCallback" << std::endl;
 
-   if (!pResult || !PyLong_Check(pResult)) {
-      LOG_PRINT_WARNING("Stats callback: return value must be (convertable into) 64-bit unsigned integer");
-      if (pResult)
-         Py_XDECREF(pResult);
-      return 0;
-   }
+    PyObject* pFunc = (PyObject*)_pFunc;
+    PyObject* pResult = HooksPy::callPythonFunction(pFunc, Py_BuildValue("(sls)", objectName.c_str(), index, metricName.c_str()));
+
+    if (!pResult || !PyLong_Check(pResult)) {
+        LOG_PRINT_WARNING("Stats callback: return value must be (convertable into) 64-bit unsigned integer");
+        if (pResult)
+            Py_XDECREF(pResult);
+        return 0;
+    }
 
    UInt64 val = PyLong_AsLongLong(pResult);
    Py_XDECREF(pResult);
@@ -164,17 +168,19 @@ static UInt64 statsCallback(String objectName, UInt32 index, String metricName, 
 static PyObject *
 registerStats(PyObject *self, PyObject *args)
 {
-   const char *objectName = NULL, *metricName = NULL;
-   long int index = -1;
-   PyObject *pFunc = NULL;
+    std::cerr << "[IAN's TESTING] py_stats.cc: CREEPY MOVEMENT: registerStats" << std::endl;
 
-   if (!PyArg_ParseTuple(args, "slsO", &objectName, &index, &metricName, &pFunc))
-      return NULL;
+    const char *objectName = NULL, *metricName = NULL;
+    long int index = -1;
+    PyObject* pFunc = NULL;
 
-   if (!PyCallable_Check(pFunc)) {
-      PyErr_SetString(PyExc_TypeError, "Fourth argument must be callable");
-      return NULL;
-   }
+    if (!PyArg_ParseTuple(args, "slsO", &objectName, &index, &metricName, &pFunc))
+        return NULL;
+
+    if (!PyCallable_Check(pFunc)) {
+        PyErr_SetString(PyExc_TypeError, "Fourth argument must be callable");
+        return NULL;
+    }
    Py_INCREF(pFunc);
 
    Sim()->getStatsManager()->registerMetric(new StatsMetricCallback(objectName, index, metricName, (StatsCallback)statsCallback, (UInt64)pFunc));
@@ -185,14 +191,16 @@ registerStats(PyObject *self, PyObject *args)
 static PyObject *
 registerPerThread(PyObject *self, PyObject *args)
 {
-   const char *objectName = NULL, *metricName = NULL, *sPerThread = NULL;
+    std::cerr << "[IAN's TESTING] py_stats.cc: CREEPY MOVEMENT: registerPerThread" << std::endl;
 
-   if (!PyArg_ParseTuple(args, "sss", &sPerThread, &objectName, &metricName))
-      return NULL;
+    const char *objectName = NULL, *metricName = NULL, *sPerThread = NULL;
 
-   ThreadStatNamedStat::registerStat(strdup(sPerThread), objectName, metricName);
+    if (!PyArg_ParseTuple(args, "sss", &sPerThread, &objectName, &metricName))
+        return NULL;
 
-   Py_RETURN_NONE;
+    ThreadStatNamedStat::registerStat(strdup(sPerThread), objectName, metricName);
+
+    Py_RETURN_NONE;
 }
 
 
@@ -203,15 +211,17 @@ registerPerThread(PyObject *self, PyObject *args)
 static PyObject *
 writeMarker(PyObject *self, PyObject *args)
 {
-   UInt64 core_id = INVALID_CORE_ID, thread_id = INVALID_THREAD_ID, arg0 = 0, arg1 = 0;
-   const char *description = NULL;
+    std::cerr << "[IAN's TESTING] py_stats.cc: CREEPY MOVEMENT: writeMarker" << std::endl;
 
-   if (!PyArg_ParseTuple(args, "llll|z", &core_id, &thread_id, &arg0, &arg1, &description))
-      return NULL;
+    UInt64 core_id = INVALID_CORE_ID, thread_id = INVALID_THREAD_ID, arg0 = 0, arg1 = 0;
+    const char* description = NULL;
 
-   Sim()->getStatsManager()->logMarker(Sim()->getClockSkewMinimizationServer()->getGlobalTime(), core_id, thread_id, arg0, arg1, description);
+    if (!PyArg_ParseTuple(args, "llll|z", &core_id, &thread_id, &arg0, &arg1, &description))
+        return NULL;
 
-   Py_RETURN_NONE;
+    Sim()->getStatsManager()->logMarker(Sim()->getClockSkewMinimizationServer()->getGlobalTime(), core_id, thread_id, arg0, arg1, description);
+
+    Py_RETURN_NONE;
 }
 
 
@@ -222,8 +232,10 @@ writeMarker(PyObject *self, PyObject *args)
 static PyObject *
 getTime(PyObject *self, PyObject *args)
 {
-   SubsecondTime time = Sim()->getClockSkewMinimizationServer()->getGlobalTime();
-   return PyLong_FromUnsignedLongLong(time.getFS());
+    std::cerr << "[IAN's TESTING] py_stats.cc: CREEPY MOVEMENT: getTime" << std::endl;
+
+    SubsecondTime time = Sim()->getClockSkewMinimizationServer()->getGlobalTime();
+    return PyLong_FromUnsignedLongLong(time.getFS());
 }
 
 
@@ -234,8 +246,10 @@ getTime(PyObject *self, PyObject *args)
 static PyObject *
 getIcount(PyObject *self, PyObject *args)
 {
-   UInt64 icount = MagicServer::getGlobalInstructionCount();
-   return PyLong_FromUnsignedLongLong(icount);
+    std::cerr << "[IAN's TESTING] py_stats.cc: CREEPY MOVEMENT: getIcount" << std::endl;
+
+    UInt64 icount = MagicServer::getGlobalInstructionCount();
+    return PyLong_FromUnsignedLongLong(icount);
 }
 
 
@@ -257,12 +271,14 @@ static PyMethodDef PyStatsMethods[] = {
 
 void HooksPy::PyStats::setup(void)
 {
-   PyObject *pModule = Py_InitModule("sim_stats", PyStatsMethods);
+    std::cerr << "[IAN's TESTING] py_stats.cc: CREEPY MOVEMENT: setup" << std::endl;
 
-   statsGetterType.tp_new = PyType_GenericNew;
-   if (PyType_Ready(&statsGetterType) < 0)
-      return;
+    PyObject* pModule = Py_InitModule("sim_stats", PyStatsMethods);
 
-   Py_INCREF(&statsGetterType);
-   PyModule_AddObject(pModule, "Getter", (PyObject *)&statsGetterType);
+    statsGetterType.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&statsGetterType) < 0)
+        return;
+
+    Py_INCREF(&statsGetterType);
+    PyModule_AddObject(pModule, "Getter", (PyObject*)&statsGetterType);
 }

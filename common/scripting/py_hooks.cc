@@ -208,15 +208,17 @@ static PyMethodDef PyHooksMethods[] = {
 
 void HooksPy::PyHooks::setup()
 {
-   PyObject *pModule = Py_InitModule("sim_hooks", PyHooksMethods);
-   PyObject *pHooks = PyDict_New();
-   PyObject_SetAttrString(pModule, "hooks", pHooks);
+    std::cerr << "[IAN's TESTING] py_hooks.cc: CREEPY MOVEMENT: setup" << std::endl;
 
-   for(int i = 0; i < int(HookType::HOOK_TYPES_MAX); ++i) {
-      PyObject *pGlobalConst = PyInt_FromLong(i);
-      PyObject_SetAttrString(pModule, HookType::hook_type_names[i], pGlobalConst);
-      PyDict_SetItemString(pHooks, HookType::hook_type_names[i], pGlobalConst);
-      Py_DECREF(pGlobalConst);
-   }
+    PyObject* pModule = Py_InitModule("sim_hooks", PyHooksMethods);
+    PyObject* pHooks = PyDict_New();
+    PyObject_SetAttrString(pModule, "hooks", pHooks);
+
+    for (int i = 0; i < int(HookType::HOOK_TYPES_MAX); ++i) {
+        PyObject* pGlobalConst = PyInt_FromLong(i);
+        PyObject_SetAttrString(pModule, HookType::hook_type_names[i], pGlobalConst);
+        PyDict_SetItemString(pHooks, HookType::hook_type_names[i], pGlobalConst);
+        Py_DECREF(pGlobalConst);
+    }
    Py_DECREF(pHooks);
 }

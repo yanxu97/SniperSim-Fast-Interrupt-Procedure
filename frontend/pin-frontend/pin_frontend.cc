@@ -365,6 +365,7 @@ VOID PinFrontend::insertCall(INS ins, IPOINT ipoint, UINT32 num_addresses, BOOL 
       IARG_BOOL, ipoint == IPOINT_BEFORE,
       IARG_BOOL, INS_Opcode(ins) == XED_ICLASS_PAUSE,
       IARG_END);
+      // std::cerr << "pin_frontend.cc:insertCall" << std::endl;
 }
 
 UINT32 PinFrontend::addMemoryModeling(INS ins)
@@ -461,6 +462,7 @@ void PinFrontend::init()
   initBaseCB();
   // Thread-related callbacks
   m_threads->initThreads();
+  // std::cerr << "pin_frontend.cc: PinFrontend::init()" << std::endl;
 }
 
 void PinFrontend::start()
@@ -485,5 +487,6 @@ std::string PinFrontend::__deleteme(INS ins)
 int main(int argc, const char* argv[])
 {
   frontend::ExecFrontend<PinFrontend>(argc, argv).start();
+  std::cerr << "pin_frontend.cc: PinFrontend::init()" << std::endl;
 }
 

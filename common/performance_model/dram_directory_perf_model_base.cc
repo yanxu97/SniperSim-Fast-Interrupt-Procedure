@@ -4,13 +4,13 @@
 
 DramDirectoryPerfModelBase* DramDirectoryPerfModelBase::createModel(UInt32 type)
 {
-   switch(type)
-   {
-      case(DRAM_DIRECTORY_PERF_MODEL):
-         return new DramDirectoryPerfModel();
-            
-      default:
-         LOG_ASSERT_ERROR(false, "Unsupported DramDirectoryModel type: %u", type);
-         return NULL;
-   }
+    std::cerr << "[IAN's TESTING] dram_directory_perf_model_base.cc: CREEPY MOVEMENT: createModel" << std::endl;
+    switch (type) {
+    case (DRAM_DIRECTORY_PERF_MODEL):
+        return new DramDirectoryPerfModel();
+
+    default:
+        LOG_ASSERT_ERROR(false, "Unsupported DramDirectoryModel type: %u", type);
+        return NULL;
+    }
 }

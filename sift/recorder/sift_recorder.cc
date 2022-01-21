@@ -28,87 +28,136 @@
 #include "sift_assert.h"
 #include "pinboost_debug.h"
 
-VOID Fini(INT32 code, VOID *v)
+// #include "/home/yxz7776/sniper/common/core/core.h"
+// #include "/home/yxz7776/sniper/pin/local_storage.h"
+
+#define MODIFIED
+
+#if defined(MODIFIED)
+static int inst_count = 0;
+#endif
+
+VOID Fini(INT32 code, VOID* v)
 {
-   for (unsigned int i = 0 ; i < max_num_threads ; i++)
-   {
-      if (thread_data[i].output)
-      {
-         closeFile(i);
-      }
-   }
+    for (unsigned int i = 0; i < max_num_threads; i++) {
+        if (thread_data[i].output) {
+            closeFile(i);
+        }
+    }
 }
 
-VOID Detach(VOID *v)
+VOID Detach(VOID* v)
 {
 }
 
-BOOL followChild(CHILD_PROCESS childProcess, VOID *val)
+BOOL followChild(CHILD_PROCESS childProcess, VOID* val)
 {
-   if (any_thread_in_detail)
-   {
-      fprintf(stderr, "EXECV ignored while in ROI\n");
-      return false; // Cannot fork/execv after starting ROI
-   }
-   else
-      return true;
+    if (any_thread_in_detail) {
+        fprintf(stderr, "EXECV ignored while in ROI\n");
+        return false; // Cannot fork/execv after starting ROI
+    } else
+        return true;
 }
 
-VOID forkBefore(THREADID threadid, const CONTEXT *ctxt, VOID *v)
+VOID forkBefore(THREADID threadid, const CONTEXT* ctxt, VOID* v)
 {
-   if(thread_data[threadid].output)
-   {
-      child_app_id = thread_data[threadid].output->Fork();
-   }
+    if (thread_data[threadid].output) {
+        child_app_id = thread_data[threadid].output->Fork();
+    }
 }
 
-VOID forkAfterInChild(THREADID threadid, const CONTEXT *ctxt, VOID *v)
+VOID forkAfterInChild(THREADID threadid, const CONTEXT* ctxt, VOID* v)
 {
-   // Forget about everything we inherited from the parent
-   routines.clear();
-   bzero(thread_data, max_num_threads * sizeof(*thread_data));
-   // Assume identity of child process
-   app_id = child_app_id;
-   num_threads = 1;
-   // Open new SIFT pipe for thread 0
-   thread_data[0].bbv = new Bbv();
-   openFile(0);
+    // Forget about everything we inherited from the parent
+    routines.clear();
+    bzero(thread_data, max_num_threads * sizeof(*thread_data));
+    // Assume identity of child process
+    app_id = child_app_id;
+    num_threads = 1;
+    // Open new SIFT pipe for thread 0
+    thread_data[0].bbv = new Bbv();
+    openFile(0);
 }
 
 bool assert_ignore()
 {
-   // stat is not supported in Pin 3.0
-   // this code just check if the file exists or not
-   // struct stat st;
-   // if (stat((KnobOutputFile.Value() + ".sift_done").c_str(), &st) == 0)
-   //    return true;
-   // else
-   //    return false;
-   if(FILE *file = fopen((KnobOutputFile.Value() + ".sift_done").c_str(), "rb")){
-      fclose(file);
-      return true;
-   }
-   else{
-      return false;
-   } 
+    // stat is not supported in Pin 3.0
+    // this code just check if the file exists or not
+    // struct stat st;
+    // if (stat((KnobOutputFile.Value() + ".sift_done").c_str(), &st) == 0)
+    //    return true;
+    // else
+    //    return false;
+    if (FILE* file = fopen((KnobOutputFile.Value() + ".sift_done").c_str(), "rb")) {
+        fclose(file);
+        return true;
+    } else {
+        return false;
+    }
 }
 
-void __sift_assert_fail(__const char *__assertion, __const char *__file,
-                        unsigned int __line, __const char *__function)
-     __THROW
+void __sift_assert_fail(__const char* __assertion, __const char* __file,
+    unsigned int __line, __const char* __function)
+    __THROW
 {
-   if (assert_ignore())
-   {
-      // Timing model says it's done, ignore assert and pretend to have exited cleanly
-      exit(0);
-   }
-   else
-   {
-      std::cerr << "[SIFT_RECORDER] " << __file << ":" << __line << ": " << __function
-                << ": Assertion `" << __assertion << "' failed." << std::endl;
-      abort();
-   }
+    if (assert_ignore()) {
+        // Timing model says it's done, ignore assert and pretend to have exited cleanly
+        exit(0);
+    } else {
+        std::cerr << "[SIFT_RECORDER] " << __file << ":" << __line << ": " << __function
+                  << ": Assertion `" << __assertion << "' failed." << std::endl;
+        abort();
+    }
 }
+
+#if defined(MODIFIED)
+VOID AnalyzeContext(ADDRINT ip, CONTEXT* ctxt)
+{
+    //  PIN_REGISTER reg_val;
+    //  PIN_GetContextRegval(ctxt, LEVEL_BASE::REG_RAX, reinterpret_cast<UINT8 *>(&reg_val));
+    // //  std::cout << std::hex << "REG_RAX: 0x" << LEVEL_VM::PIN_REGISTER::reg_val << std::endl;
+    // std::cout << std::hex << "REG_GAX: 0x" << PIN_GetContextReg(ctxt, LEVEL_BASE::REG_GAX) << std::endl;
+
+    Sift::EmuRequest req;
+    Sift::EmuReply res;
+    bool emulated = thread_data[0].output->Emulate(Sift::EmuTypeRdtsc, req, res);
+    if (emulated) {
+        std::cerr << "Current # of executed cycle:" << res.rdtsc.cycles << std::endl;
+    }
+
+    // Core * core = localStore[0].thread->getCore();
+    // assert (core);
+    // SubsecondTime cycles_fs = core->getPerformanceModel()->getElapsedTime();
+}
+
+static VOID InstrumentInstructionByThreshold(
+    INS ins,
+    VOID* v)
+{
+    RTN Parent = INS_Rtn(ins);
+    if (false
+        || !(RTN_Valid(Parent))
+        || (RTN_Name(Parent) != "main"))
+        return;
+
+    inst_count++;
+    if (10 != inst_count)
+        return;
+
+    // PerformanceModel* prfmdl = getPerformanceModel();
+    // SubsecondTime cycles_fs = prfmdl->getElapsedTime();
+
+    INS_InsertPredicatedCall(ins,
+        IPOINT_BEFORE, // decide if you want to point before or IPOINT_AFTER
+        (AFUNPTR)AnalyzeContext, // analysis routine
+        IARG_INST_PTR, // address of the ins
+        IARG_CONST_CONTEXT, // the const context (DO NOT MODIFY it in the analysis!)
+        IARG_END);
+
+    std::cerr << "sift_recorder->InstrumentInstructionByThreshold: Ian walked by..." << std::endl;
+    std::cerr << INS_Address(ins) << " : " << INS_Disassemble(ins) << std::endl;
+}
+#endif
 
 int main(int argc, char **argv)
 {
@@ -215,6 +264,19 @@ int main(int argc, char **argv)
    }
 
    pinboost_register("SIFT_RECORDER", KnobDebug.Value());
+
+#if defined(MODIFIED)
+   std::cerr << "In sift(pin) side, Ian is visiting..." << std::endl;
+
+   // PIN_REGISTER * gax;
+   // PIN_REGISTER * gdx;
+   // handleRdtsc(0, REG_GAX, REG_GDX);
+   // std::cerr << thread_data
+
+   INS_AddInstrumentFunction(
+       InstrumentInstructionByThreshold,
+       nullptr);
+#endif
 
    PIN_StartProgram();
 

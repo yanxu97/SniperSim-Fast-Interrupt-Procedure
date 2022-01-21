@@ -30,16 +30,17 @@ ContentionModel::ContentionModel(String name, core_id_t core_id, UInt32 num_outs
    , m_total_delay(SubsecondTime::Zero())
    , m_total_barrier_delay(SubsecondTime::Zero())
 {
-   if (m_num_outstanding > 0)
-   {
-      registerStatsMetric(name, core_id, "num-requests", &m_n_requests);
-      registerStatsMetric(name, core_id, "num-barriers", &m_n_barriers);
-      registerStatsMetric(name, core_id, "requests-out-of-order", &m_n_outoforder);
-      registerStatsMetric(name, core_id, "requests-simultaneous", &m_n_simultaneous);
-      registerStatsMetric(name, core_id, "no-free-slots", &m_n_hasfreefail);
-      registerStatsMetric(name, core_id, "total-delay", &m_total_delay);
-      registerStatsMetric(name, core_id, "total-barrier-delay", &m_total_barrier_delay);
-   }
+    std::cerr << "[IAN's TESTING] contention_model.cc: CREEPY MOVEMENT: ContentionModel" << std::endl;
+
+    if (m_num_outstanding > 0) {
+        registerStatsMetric(name, core_id, "num-requests", &m_n_requests);
+        registerStatsMetric(name, core_id, "num-barriers", &m_n_barriers);
+        registerStatsMetric(name, core_id, "requests-out-of-order", &m_n_outoforder);
+        registerStatsMetric(name, core_id, "requests-simultaneous", &m_n_simultaneous);
+        registerStatsMetric(name, core_id, "no-free-slots", &m_n_hasfreefail);
+        registerStatsMetric(name, core_id, "total-delay", &m_total_delay);
+        registerStatsMetric(name, core_id, "total-barrier-delay", &m_total_barrier_delay);
+    }
 }
 
 ContentionModel::~ContentionModel()

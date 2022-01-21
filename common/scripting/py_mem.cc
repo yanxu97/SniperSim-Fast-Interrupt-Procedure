@@ -5,46 +5,48 @@
 static PyObject *
 readMemory(PyObject *self, PyObject *args)
 {
-   long int core_id;
-   UInt64 address = 0, size = 0;
+    std::cerr << "[IAN's TESTING] py_mem.cc: CREEPY MOVEMENT: readMemory" << std::endl;
 
-   if (!PyArg_ParseTuple(args, "lll", &core_id, &address, &size))
-      return NULL;
+    long int core_id;
+    UInt64 address = 0, size = 0;
 
-   Core *core = Sim()->getCoreManager()->getCoreFromID(core_id);
-   LOG_ASSERT_ERROR(core != NULL, "Invalid core_id %d", core_id);
+    if (!PyArg_ParseTuple(args, "lll", &core_id, &address, &size))
+        return NULL;
 
-   char *buf = new char[size];
-   core->accessMemory(Core::NONE, Core::READ, address, buf, size, Core::MEM_MODELED_NONE);
+    Core* core = Sim()->getCoreManager()->getCoreFromID(core_id);
+    LOG_ASSERT_ERROR(core != NULL, "Invalid core_id %d", core_id);
 
-   PyObject *res = Py_BuildValue("s#", buf, size);
-   delete buf;
+    char* buf = new char[size];
+    core->accessMemory(Core::NONE, Core::READ, address, buf, size, Core::MEM_MODELED_NONE);
 
-   return res;
+    PyObject* res = Py_BuildValue("s#", buf, size);
+    delete buf;
+
+    return res;
 }
 
 static PyObject *
 readCstr(PyObject *self, PyObject *args)
 {
-   long int core_id;
-   UInt64 address = 0;
+    std::cerr << "[IAN's TESTING] py_mem.cc: CREEPY MOVEMENT: readCstr" << std::endl;
 
-   if (!PyArg_ParseTuple(args, "il", &core_id, &address))
-      return NULL;
+    long int core_id;
+    UInt64 address = 0;
 
-   Core *core = Sim()->getCoreManager()->getCoreFromID(core_id);
-   LOG_ASSERT_ERROR(core != NULL, "Invalid core_id %d", core_id);
+    if (!PyArg_ParseTuple(args, "il", &core_id, &address))
+        return NULL;
 
-   const long maxsize = 65536, chunksize = 256;
-   char *buf = new char[maxsize+1];
-   char *ptr = buf;
-   do
-   {
-      core->accessMemory(Core::NONE, Core::READ, address, ptr, chunksize, Core::MEM_MODELED_NONE);
-      address += chunksize;
-      ptr += chunksize;
-   }
-   while(memchr(buf, 0, ptr - buf) == NULL && ptr < buf + maxsize);
+    Core* core = Sim()->getCoreManager()->getCoreFromID(core_id);
+    LOG_ASSERT_ERROR(core != NULL, "Invalid core_id %d", core_id);
+
+    const long maxsize = 65536, chunksize = 256;
+    char* buf = new char[maxsize + 1];
+    char* ptr = buf;
+    do {
+        core->accessMemory(Core::NONE, Core::READ, address, ptr, chunksize, Core::MEM_MODELED_NONE);
+        address += chunksize;
+        ptr += chunksize;
+    } while (memchr(buf, 0, ptr - buf) == NULL && ptr < buf + maxsize);
 
    buf[maxsize] = 0;
    PyObject *res = Py_BuildValue("s", buf);
@@ -61,5 +63,6 @@ static PyMethodDef PyMemMethods[] = {
 
 void HooksPy::PyMem::setup(void)
 {
-   Py_InitModule("sim_mem", PyMemMethods);
+    std::cerr << "[IAN's TESTING] py_mem.cc: CREEPY MOVEMENT: setup" << std::endl;
+    Py_InitModule("sim_mem", PyMemMethods);
 }

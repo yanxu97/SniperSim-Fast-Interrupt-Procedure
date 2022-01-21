@@ -10,8 +10,10 @@ ShmemPerfModel::ShmemPerfModel():
    m_num_memory_accesses(0),
    m_total_memory_access_latency(SubsecondTime::Zero())
 {
-   for (UInt32 i = 0; i < NUM_CORE_THREADS; i++)
-      m_elapsed_time[i] = SubsecondTime::Zero();
+    std::cerr << "[IAN's TESTING] shmem_perf_model.cc: CREEPY MOVEMENT: ShmemPerfModel" << std::endl;
+
+    for (UInt32 i = 0; i < NUM_CORE_THREADS; i++)
+        m_elapsed_time[i] = SubsecondTime::Zero();
 }
 
 ShmemPerfModel::~ShmemPerfModel()
@@ -48,18 +50,21 @@ ShmemPerfModel::updateElapsedTime(SubsecondTime time, Thread_t thread_num)
 void
 ShmemPerfModel::incrElapsedTime(SubsecondTime time, Thread_t thread_num)
 {
-   LOG_PRINT("incrElapsedTime: time(%s)", itostr(time).c_str());
-   //ScopedLock sl(m_shmem_perf_model_lock);
+    // Ian: didn't increment the simulated time in testbench interrupted_hello
+    // std::cerr << "++++++++++++++++[IAN's TESTING] shmem_perf_model.cc: CREEPY MOVEMENT: incrElapsedTime" << std::endl;
 
-   SubsecondTime i_elapsed_time = m_elapsed_time[thread_num];
-   SubsecondTime t_elapsed_time = i_elapsed_time + time;
+    LOG_PRINT("incrElapsedTime: time(%s)", itostr(time).c_str());
+    // ScopedLock sl(m_shmem_perf_model_lock);
 
-   LOG_ASSERT_ERROR(t_elapsed_time >= i_elapsed_time,
-         "t_elapsed_time(%s) < i_elapsed_time(%s)",
-         itostr(t_elapsed_time).c_str(),
-         itostr(i_elapsed_time).c_str());
+    SubsecondTime i_elapsed_time = m_elapsed_time[thread_num];
+    SubsecondTime t_elapsed_time = i_elapsed_time + time;
 
-   atomic_add_subsecondtime(m_elapsed_time[thread_num], time);
+    LOG_ASSERT_ERROR(t_elapsed_time >= i_elapsed_time,
+        "t_elapsed_time(%s) < i_elapsed_time(%s)",
+        itostr(t_elapsed_time).c_str(),
+        itostr(i_elapsed_time).c_str());
+
+    atomic_add_subsecondtime(m_elapsed_time[thread_num], time);
 }
 
 void

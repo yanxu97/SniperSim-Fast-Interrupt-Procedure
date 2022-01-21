@@ -12,18 +12,29 @@ class ShmemPerfModel;
 class TopologyInfo;
 class CheetahManager;
 
-#include "mem_component.h"
-#include "fixed_types.h"
-#include "lock.h"
-#include "packet_type.h"
-#include "subsecond_time.h"
 #include "bbv_count.h"
 #include "cpuid.h"
+#include "fixed_types.h"
 #include "hit_where.h"
+#include "lock.h"
+#include "mem_component.h"
+#include "packet_type.h"
+#include "performance_model.h"
+#include "subsecond_time.h"
+
+// #include "/home/yxz7776/sniper/common/core/bbv_count.h"
+// #include "/home/yxz7776/sniper/common/core/memory_subsystem/mem_component.h"
+// #include "/home/yxz7776/sniper/common/misc/lock.h"
+// #include "/home/yxz7776/sniper/common/misc/subsecond_time.h"
+// #include "/home/yxz7776/sniper/common/network/packet_type.h"
+// #include "/home/yxz7776/sniper/sift/recorder/sift/fixed_types.h"
+
+// #include "/home/yxz7776/sniper/common/misc/cpuid.h"
+// #include "/home/yxz7776/sniper/common/performance_model/hit_where.h"
 
 struct MemoryResult {
-   HitWhere::where_t hit_where;
-   subsecond_time_t latency;
+    HitWhere::where_t hit_where;
+    subsecond_time_t latency;
 };
 
 MemoryResult makeMemoryResult(HitWhere::where_t _hit_where, SubsecondTime _latency);
@@ -128,9 +139,9 @@ class Core
 
       void updateSpinCount(UInt64 instructions, SubsecondTime elapsed_time)
       {
-         m_spin_loops++;
-         m_spin_instructions += instructions;
-         m_spin_elapsed_time += elapsed_time;
+          m_spin_loops++;
+          m_spin_instructions += instructions;
+          m_spin_elapsed_time += elapsed_time;
       }
 
    private:

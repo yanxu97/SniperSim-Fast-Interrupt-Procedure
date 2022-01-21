@@ -15,20 +15,21 @@ CachePerfModel*
 CachePerfModel::create(String cache_perf_model_type,
       const ComponentLatency& cache_data_access_time, const ComponentLatency& cache_tags_access_time)
 {
-   PerfModel_t perf_model = parseModelType(cache_perf_model_type);
+    std::cerr << "[IAN's TESTING] cache_perf_model.cc: CREEPY MOVEMENT: create" << std::endl;
 
-   switch(perf_model)
-   {
-      case(CACHE_PERF_MODEL_PARALLEL):
-         return new CachePerfModelParallel(cache_data_access_time, cache_tags_access_time);
+    PerfModel_t perf_model = parseModelType(cache_perf_model_type);
 
-      case(CACHE_PERF_MODEL_SEQUENTIAL):
-         return new CachePerfModelSequential(cache_data_access_time, cache_tags_access_time);
+    switch (perf_model) {
+    case (CACHE_PERF_MODEL_PARALLEL):
+        return new CachePerfModelParallel(cache_data_access_time, cache_tags_access_time);
 
-      default:
-         LOG_ASSERT_ERROR(false, "Unsupported CachePerfModel type: %s", cache_perf_model_type.c_str());
-         return NULL;
-   }
+    case (CACHE_PERF_MODEL_SEQUENTIAL):
+        return new CachePerfModelSequential(cache_data_access_time, cache_tags_access_time);
+
+    default:
+        LOG_ASSERT_ERROR(false, "Unsupported CachePerfModel type: %s", cache_perf_model_type.c_str());
+        return NULL;
+    }
 }
 
 CachePerfModel::PerfModel_t

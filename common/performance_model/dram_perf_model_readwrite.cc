@@ -16,15 +16,16 @@ DramPerfModelReadWrite::DramPerfModelReadWrite(core_id_t core_id,
    m_total_write_queueing_delay(SubsecondTime::Zero()),
    m_total_access_latency(SubsecondTime::Zero())
 {
-   m_dram_access_cost = SubsecondTime::FS() * static_cast<uint64_t>(TimeConverter<float>::NStoFS(Sim()->getCfg()->getFloat("perf_model/dram/latency"))); // Operate in fs for higher precision before converting to uint64_t/SubsecondTime
+    std::cerr << "[IAN's TESTING] dram_perf_model_readwrite.cc: CREEPY MOVEMENT: DramPerfModelReadWrite" << std::endl;
 
-   if (Sim()->getCfg()->getBool("perf_model/dram/queue_model/enabled"))
-   {
-      m_queue_model_read = QueueModel::create("dram-queue-read", core_id, Sim()->getCfg()->getString("perf_model/dram/queue_model/type"),
-                                              m_dram_bandwidth.getRoundedLatency(8 * cache_block_size)); // bytes to bits
-      m_queue_model_write = QueueModel::create("dram-queue-write", core_id, Sim()->getCfg()->getString("perf_model/dram/queue_model/type"),
-                                               m_dram_bandwidth.getRoundedLatency(8 * cache_block_size)); // bytes to bits
-   }
+    m_dram_access_cost = SubsecondTime::FS() * static_cast<uint64_t>(TimeConverter<float>::NStoFS(Sim()->getCfg()->getFloat("perf_model/dram/latency"))); // Operate in fs for higher precision before converting to uint64_t/SubsecondTime
+
+    if (Sim()->getCfg()->getBool("perf_model/dram/queue_model/enabled")) {
+        m_queue_model_read = QueueModel::create("dram-queue-read", core_id, Sim()->getCfg()->getString("perf_model/dram/queue_model/type"),
+            m_dram_bandwidth.getRoundedLatency(8 * cache_block_size)); // bytes to bits
+        m_queue_model_write = QueueModel::create("dram-queue-write", core_id, Sim()->getCfg()->getString("perf_model/dram/queue_model/type"),
+            m_dram_bandwidth.getRoundedLatency(8 * cache_block_size)); // bytes to bits
+    }
 
    registerStatsMetric("dram", core_id, "total-access-latency", &m_total_access_latency);
    registerStatsMetric("dram", core_id, "total-read-queueing-delay", &m_total_read_queueing_delay);

@@ -57,6 +57,7 @@ void TraceManager::setupTraceFiles(int index)
          m_tracefiles[i] = Sim()->getCfg()->getStringArray("traceinput/thread_" + itostr(i), index);
       }
    }
+   std::cerr << "[IAN's TESTING] trace_manager.cc: CREEPY MOVEMENT: setupTraceFiles" << std::endl;
 }
 
 void TraceManager::init()
@@ -65,6 +66,7 @@ void TraceManager::init()
    {
       newThread(i /*app_id*/, true /*first*/, false /*init_fifo*/, false /*spawn*/, SubsecondTime::Zero(), INVALID_THREAD_ID);
    }
+   std::cerr << "[IAN's TESTING] trace_manager.cc: CREEPY MOVEMENT: init" << std::endl;
 }
 
 String TraceManager::getFifoName(app_id_t app_id, UInt64 thread_num, bool response, bool create)

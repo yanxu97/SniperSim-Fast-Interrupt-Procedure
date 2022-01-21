@@ -1,6 +1,9 @@
 #include "log.h"
 #include "inst_mode.h"
 
+// Ian: added for testing...
+#include <iostream>
+
 const char * inst_mode_names[] = {
    "INVALID", "DETAILED", "CACHE_ONLY", "FAST_FORWARD"
 };
@@ -31,4 +34,6 @@ InstMode::fromString(const String str)
       return FAST_FORWARD;
    else
       LOG_PRINT_ERROR("Invalid instrumentation mode %s", str.c_str());
+
+   std::cerr << "[IAN's TESTING] inst_mode.cc: CREEPY MOVEMENT: fromString" << std::endl;
 }

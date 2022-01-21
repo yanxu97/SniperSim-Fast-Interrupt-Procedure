@@ -16,6 +16,7 @@ Instruction::Instruction(InstructionType type, OperandList &operands)
    , m_addr(0)
    , m_operands(operands)
 {
+    std::cerr << "[IAN's TESTING] instruction.cc: CREEPY MOVEMENT: Instruction" << std::endl;
 }
 
 Instruction::Instruction(InstructionType type)

@@ -6,6 +6,8 @@
 #include "inst_mode.h"
 #include "spin_loop_detection.h"
 
+// #include "/home/yxz7776/sniper/common/system/inst_mode.h"
+
 #include <vector>
 
 class Thread;

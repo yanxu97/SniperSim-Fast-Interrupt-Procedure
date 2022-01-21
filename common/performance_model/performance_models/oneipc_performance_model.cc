@@ -38,42 +38,39 @@ OneIPCPerformanceModel::~OneIPCPerformanceModel()
 
 void OneIPCPerformanceModel::handleInstruction(DynamicInstruction *dynins)
 {
-   // compute cost
-   ComponentTime cost = m_elapsed_time.getLatencyGenerator();
-   SubsecondTime *cpiComponent = NULL;
+    std::cerr << "[IAN's TESTING] oneipc_performance_model.cc: CREEPY MOVEMENT: handleInstruction&" << std::endl;
 
-   dynins->accessMemory(getCore());
+    // compute cost
+    ComponentTime cost = m_elapsed_time.getLatencyGenerator();
+    SubsecondTime* cpiComponent = NULL;
 
-   const OperandList &ops = dynins->instruction->getOperands();
-   unsigned int memidx = 0;
-   for (unsigned int i = 0; i < ops.size(); i++)
-   {
-      const Operand &o = ops[i];
+    dynins->accessMemory(getCore());
 
-      if (o.m_type == Operand::MEMORY)
-      {
-         LOG_ASSERT_ERROR(dynins->num_memory > memidx, "Did not get enough memory_info objects");
-         DynamicInstruction::MemoryInfo &info = dynins->memory_info[memidx++];
-         LOG_ASSERT_ERROR(info.dir == o.m_direction,
-                          "Expected memory %d info, got: %d.", o.m_direction, info.dir);
+    const OperandList& ops = dynins->instruction->getOperands();
+    unsigned int memidx = 0;
+    for (unsigned int i = 0; i < ops.size(); i++) {
+        const Operand& o = ops[i];
 
-         if (o.m_direction == Operand::READ)
-         {
-            if (info.latency
-                  > ComponentLatency(getCore()->getDvfsDomain(), m_latency_cutoff).getLatency())
-               cost.addLatency(info.latency);
-            // ignore address
-         }
-         else
-         {
-            // ignore write latency
-            // ignore address
-         }
+        if (o.m_type == Operand::MEMORY) {
+            LOG_ASSERT_ERROR(dynins->num_memory > memidx, "Did not get enough memory_info objects");
+            DynamicInstruction::MemoryInfo& info = dynins->memory_info[memidx++];
+            LOG_ASSERT_ERROR(info.dir == o.m_direction,
+                "Expected memory %d info, got: %d.", o.m_direction, info.dir);
 
-         if (cpiComponent == NULL)
-            cpiComponent = &m_cpiDataCache[info.hit_where];
-      }
-   }
+            if (o.m_direction == Operand::READ) {
+                if (info.latency
+                    > ComponentLatency(getCore()->getDvfsDomain(), m_latency_cutoff).getLatency())
+                    cost.addLatency(info.latency);
+                // ignore address
+            } else {
+                // ignore write latency
+                // ignore address
+            }
+
+            if (cpiComponent == NULL)
+                cpiComponent = &m_cpiDataCache[info.hit_where];
+        }
+    }
 
    SubsecondTime instruction_cost = dynins->instruction->getCost(getCore());
 

@@ -12,6 +12,8 @@ class PeriodicStats:
   def setup(self, args):
     args = dict(enumerate((args or '').split(':')))
     interval = long(args.get(0, '') or 1000000000)
+    print("The period is : ")
+    print(interval)
     self.max_snapshots = long(args.get(1, 0))
     self.num_snapshots = 0
     self.interval = long(interval * sim.util.Time.NS)

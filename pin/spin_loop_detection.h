@@ -1,8 +1,11 @@
 #ifndef __SPIN_LOOP_DETECTION_H
 #define __SPIN_LOOP_DETECTION_H
 
-#include "spin_loop_detector.h"
-#include "inst_mode.h"
+// #include "spin_loop_detector.h"
+// #include "inst_mode.h"
+
+#include "/home/yxz7776/sniper/common/misc/spin_loop_detector.h"
+#include "/home/yxz7776/sniper/common/system/inst_mode.h"
 
 #include "pin.H"
 

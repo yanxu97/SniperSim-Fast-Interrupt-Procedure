@@ -152,26 +152,26 @@ void MicroOpPerformanceModel::doSquashing(std::vector<DynamicMicroOp*> &current_
 
 void MicroOpPerformanceModel::handleInstruction(DynamicInstruction *dynins)
 {
-   ComponentPeriod insn_period = *(const_cast<ComponentPeriod*>(static_cast<const ComponentPeriod*>(m_elapsed_time)));
-   std::vector<DynamicMicroOp*> current_uops;
+    std::cerr << "[IAN's TESTING] micro_op_performance_model.cc: CREEPY MOVEMENT: handleInstruction&" << std::endl;
 
-   // These vectors are local to handleInstruction, but keeping them around as member variables
-   // saves a lot on allocation/deallocation time.
-   m_current_uops.clear();
-   m_cache_lines_read.clear();
-   m_cache_lines_written.clear();
+    ComponentPeriod insn_period = *(const_cast<ComponentPeriod*>(static_cast<const ComponentPeriod*>(m_elapsed_time)));
+    std::vector<DynamicMicroOp*> current_uops;
 
-   UInt64 num_reads_done = 0;
-   UInt64 num_writes_done = 0;
-   UInt64 num_nonmem_done = 0;
+    // These vectors are local to handleInstruction, but keeping them around as member variables
+    // saves a lot on allocation/deallocation time.
+    m_current_uops.clear();
+    m_cache_lines_read.clear();
+    m_cache_lines_written.clear();
 
-   if (dynins->instruction->getMicroOps())
-   {
-      for(std::vector<const MicroOp*>::const_iterator it = dynins->instruction->getMicroOps()->begin(); it != dynins->instruction->getMicroOps()->end(); it++)
-      {
-         m_current_uops.push_back(m_core_model->createDynamicMicroOp(m_allocator, *it, insn_period));
-      }
-   }
+    UInt64 num_reads_done = 0;
+    UInt64 num_writes_done = 0;
+    UInt64 num_nonmem_done = 0;
+
+    if (dynins->instruction->getMicroOps()) {
+        for (std::vector<const MicroOp*>::const_iterator it = dynins->instruction->getMicroOps()->begin(); it != dynins->instruction->getMicroOps()->end(); it++) {
+            m_current_uops.push_back(m_core_model->createDynamicMicroOp(m_allocator, *it, insn_period));
+        }
+    }
 
    // Find some information
    size_t num_loads = 0;
@@ -355,7 +355,7 @@ void MicroOpPerformanceModel::handleInstruction(DynamicInstruction *dynins)
    {
       insn_cost = dynins->getCost(getCore());
 
-   #if DEBUG_INSN_LOG
+#if DEBUG_INSN_LOG
       if (insn_cost > 17)
       {
          fprintf(m_insn_log, "[%llu] ", (long long unsigned int)m_cycle_count);

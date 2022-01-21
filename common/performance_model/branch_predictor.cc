@@ -27,41 +27,32 @@ UInt64 BranchPredictor::m_mispredict_penalty;
 
 BranchPredictor* BranchPredictor::create(core_id_t core_id)
 {
-   try
-   {
-      config::Config *cfg = Sim()->getCfg();
-      assert(cfg);
+    std::cerr << "[IAN's TESTING] branch_predictor.cc: CREEPY MOVEMENT: create" << std::endl;
 
-      m_mispredict_penalty = cfg->getIntArray("perf_model/branch_predictor/mispredict_penalty", core_id);
+    try {
+        config::Config* cfg = Sim()->getCfg();
+        assert(cfg);
 
-      String type = cfg->getStringArray("perf_model/branch_predictor/type", core_id);
-      if (type == "none")
-      {
-         return 0;
-      }
-      else if (type == "one_bit")
-      {
-         UInt32 size = cfg->getIntArray("perf_model/branch_predictor/size", core_id);
-         return new OneBitBranchPredictor("branch_predictor", core_id, size);
-      }
-      else if (type == "pentium_m")
-      {
-         return new PentiumMBranchPredictor("branch_predictor", core_id);
-      }
-      else if (type == "a53") {
-          return new A53BranchPredictor("branch_predictor", core_id);
-      }
-      else
-      {
-         LOG_PRINT_ERROR("Invalid branch predictor type.");
-         return 0;
-      }
-   }
-   catch (...)
-   {
-      LOG_PRINT_ERROR("Config info not available while constructing branch predictor.");
-      return 0;
-   }
+        m_mispredict_penalty = cfg->getIntArray("perf_model/branch_predictor/mispredict_penalty", core_id);
+
+        String type = cfg->getStringArray("perf_model/branch_predictor/type", core_id);
+        if (type == "none") {
+            return 0;
+        } else if (type == "one_bit") {
+            UInt32 size = cfg->getIntArray("perf_model/branch_predictor/size", core_id);
+            return new OneBitBranchPredictor("branch_predictor", core_id, size);
+        } else if (type == "pentium_m") {
+            return new PentiumMBranchPredictor("branch_predictor", core_id);
+        } else if (type == "a53") {
+            return new A53BranchPredictor("branch_predictor", core_id);
+        } else {
+            LOG_PRINT_ERROR("Invalid branch predictor type.");
+            return 0;
+        }
+    } catch (...) {
+        LOG_PRINT_ERROR("Config info not available while constructing branch predictor.");
+        return 0;
+    }
 }
 
 UInt64 BranchPredictor::getMispredictPenalty()

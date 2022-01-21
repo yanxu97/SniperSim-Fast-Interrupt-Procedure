@@ -25,14 +25,18 @@
 
 void InstructionModeling::handleInstruction(THREADID thread_id, Instruction *instruction)
 {
-   Thread *thread = localStore[thread_id].thread;
-   Core *core = thread->getCore();
-   PerformanceModel *prfmdl = core->getPerformanceModel();
+    std::cerr << "[IAN's TESTING] instruction_modeling.cc: CREEPY MOVEMENT: handleInstruction" << std::endl;
 
-   if (localStore[thread_id].dynins)
-      prfmdl->queueInstruction(localStore[thread_id].dynins);
+    Thread* thread = localStore[thread_id].thread;
+    Core* core = thread->getCore();
+    PerformanceModel* prfmdl = core->getPerformanceModel();
 
-   localStore[thread_id].dynins = prfmdl->createDynamicInstruction(instruction, instruction->getAddress());
+    std::cerr << "  " << prfmdl->getElapsedTime() << std::endl;
+    std::cerr << "" << std::endl;
+    if (localStore[thread_id].dynins)
+        prfmdl->queueInstruction(localStore[thread_id].dynins);
+
+    localStore[thread_id].dynins = prfmdl->createDynamicInstruction(instruction, instruction->getAddress());
 }
 
 void InstructionModeling::handleBasicBlock(THREADID thread_id)
@@ -89,6 +93,9 @@ static void handleRdtsc(THREADID thread_id, PIN_REGISTER * gax, PIN_REGISTER * g
    // Convert SubsecondTime to cycles in global clock domain
    const ComponentPeriod *dom_global = Sim()->getDvfsManager()->getGlobalDomain();
    UInt64 cycles = SubsecondTime::divideRounded(cycles_fs, *dom_global);
+   // Ian: not called in simulation of interrupted_hello
+   std::cerr << "[IAN's TESTING] instruction_modeling.cc: CREEPY MOVEMENT: handleRdtsc: " << *dom_global << std::endl;
+
    // Return in eax and edx
    gdx->dword[0] = cycles >> 32;
    gax->dword[0] = cycles & 0xffffffff;
@@ -341,14 +348,15 @@ Instruction* InstructionModeling::decodeInstruction(INS ins)
 
 VOID InstructionModeling::countInstructions(THREADID thread_id, ADDRINT address, INT32 count)
 {
-   if (!Sim()->isRunning())
-   {
-      // Main thread has exited, but we still seem to be running.
-      // Don't touch any more simulator structure as they're being deallocated right now.
-      // Just wait here until the whole application terminates us.
-      while(1)
-         sched_yield();
-   }
+    std::cerr << "[IAN's TESTING] instruction_modeling.cc: CREEPY MOVEMENT: countInstructions" << std::endl;
+
+    if (!Sim()->isRunning()) {
+        // Main thread has exited, but we still seem to be running.
+        // Don't touch any more simulator structure as they're being deallocated right now.
+        // Just wait here until the whole application terminates us.
+        while (1)
+            sched_yield();
+    }
 
    Core* core = localStore[thread_id].thread->getCore();
    assert(core);

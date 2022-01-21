@@ -2,7 +2,9 @@
 #define __SPIN_LOOP_DETECTOR_H
 
 #include "fixed_types.h"
-#include "thread.h"
+// #include "thread.h"
+
+#include "/home/yxz7776/sniper/common/core/thread.h"
 
 #include <unordered_map>
 #include <deque>

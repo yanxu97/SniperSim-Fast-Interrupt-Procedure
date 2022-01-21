@@ -36,15 +36,20 @@ FastforwardPerformanceModel::FastforwardPerformanceModel(Core *core, Performance
 void
 FastforwardPerformanceModel::incrementElapsedTime(SubsecondTime latency)
 {
-   incrementElapsedTime(latency, m_cpiBase);
+    incrementElapsedTime(latency, m_cpiBase);
 }
 
 void
 FastforwardPerformanceModel::incrementElapsedTime(SubsecondTime latency, SubsecondTime &cpiComponent)
 {
-   m_fastforwarded_time += latency;
-   cpiComponent += latency;
-   m_perf->incrementElapsedTime(latency);
+    std::cerr << "[IAN's TESTING] BEGIN in fastforward_performance_model.cc: incrementElapsedTime" << std::endl;
+    m_fastforwarded_time += latency;
+    cpiComponent += latency;
+    m_perf->incrementElapsedTime(latency);
+    std::cerr << "Latency: " << latency << std::endl;
+    std::cerr << "TOTAL elapsed time: " << m_perf->getElapsedTime() << std::endl;
+    std::cerr << "[IAN's TESTING] END in fastforward_performance_model.cc: incrementElapsedTime" << std::endl;
+    std::cerr << "" << std::endl;
 }
 
 void

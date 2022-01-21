@@ -6,35 +6,38 @@
 static PyObject *
 setROI(PyObject *self, PyObject *args)
 {
-   bool inRoi = false;
+    std::cerr << "[IAN's TESTING] py_control.cc: CREEPY MOVEMENT: setROI" << std::endl;
 
-   if (!PyArg_ParseTuple(args, "b", &inRoi))
-      return NULL;
+    bool inRoi = false;
 
-   Sim()->getMagicServer()->setPerformance(inRoi);
+    if (!PyArg_ParseTuple(args, "b", &inRoi))
+        return NULL;
 
-   Py_RETURN_NONE;
+    Sim()->getMagicServer()->setPerformance(inRoi);
+
+    Py_RETURN_NONE;
 }
 
 static PyObject *
 setInstrumentationMode(PyObject *self, PyObject *args)
 {
-   long int mode = 999;
+    std::cerr << "[IAN's TESTING] py_control.cc: CREEPY MOVEMENT: setInstrumentationMode" << std::endl;
 
-   if (!PyArg_ParseTuple(args, "l", &mode))
-      return NULL;
+    long int mode = 999;
 
-   switch (mode)
-   {
-      case SIM_OPT_INSTRUMENT_DETAILED:
-      case SIM_OPT_INSTRUMENT_WARMUP:
-      case SIM_OPT_INSTRUMENT_FASTFORWARD:
-         Sim()->getMagicServer()->Magic_unlocked(INVALID_CORE_ID, INVALID_THREAD_ID, SIM_CMD_INSTRUMENT_MODE, mode, 0);
-         break;
-      default:
-         LOG_PRINT_ERROR("Unexpected instrumentation mode from python: %lx.", mode);
-         return NULL;
-   }
+    if (!PyArg_ParseTuple(args, "l", &mode))
+        return NULL;
+
+    switch (mode) {
+    case SIM_OPT_INSTRUMENT_DETAILED:
+    case SIM_OPT_INSTRUMENT_WARMUP:
+    case SIM_OPT_INSTRUMENT_FASTFORWARD:
+        Sim()->getMagicServer()->Magic_unlocked(INVALID_CORE_ID, INVALID_THREAD_ID, SIM_CMD_INSTRUMENT_MODE, mode, 0);
+        break;
+    default:
+        LOG_PRINT_ERROR("Unexpected instrumentation mode from python: %lx.", mode);
+        return NULL;
+    }
 
    Py_RETURN_NONE;
 }
@@ -42,29 +45,33 @@ setInstrumentationMode(PyObject *self, PyObject *args)
 static PyObject *
 setProgress(PyObject *self, PyObject *args)
 {
-   float progress = 0;
+    std::cerr << "[IAN's TESTING] py_control.cc: CREEPY MOVEMENT: setProgress" << std::endl;
 
-   if (!PyArg_ParseTuple(args, "f", &progress))
-      return NULL;
+    float progress = 0;
 
-   Sim()->getMagicServer()->setProgress(progress);
+    if (!PyArg_ParseTuple(args, "f", &progress))
+        return NULL;
 
-   Py_RETURN_NONE;
+    Sim()->getMagicServer()->setProgress(progress);
+
+    Py_RETURN_NONE;
 }
 
 static PyObject *
 simulatorAbort(PyObject *self, PyObject *args)
 {
-   // Exit now, cleaning up as best as possible
-   // For benchmarks where, after ROI, functionally simulating until the end takes too long.
+    std::cerr << "[IAN's TESTING] py_control.cc: CREEPY MOVEMENT: simulatorAbort" << std::endl;
 
-   // If we're still in ROI, make sure we end it properly
-   Sim()->getMagicServer()->setPerformance(false);
+    // Exit now, cleaning up as best as possible
+    // For benchmarks where, after ROI, functionally simulating until the end takes too long.
 
-   LOG_PRINT("Application exit.");
-   Simulator::release();
+    // If we're still in ROI, make sure we end it properly
+    Sim()->getMagicServer()->setPerformance(false);
 
-   exit(0);
+    LOG_PRINT("Application exit.");
+    Simulator::release();
+
+    exit(0);
 }
 
 static PyMethodDef PyControlMethods[] = {
@@ -77,13 +84,15 @@ static PyMethodDef PyControlMethods[] = {
 
 void HooksPy::PyControl::setup(void)
 {
-   PyObject *pModule = Py_InitModule("sim_control", PyControlMethods);
+    std::cerr << "[IAN's TESTING] py_control.cc: CREEPY MOVEMENT: setup" << std::endl;
 
-   {
-      PyObject *pGlobalConst = PyInt_FromLong(SIM_OPT_INSTRUMENT_DETAILED);
-      PyObject_SetAttrString(pModule, "DETAILED", pGlobalConst);
-      Py_DECREF(pGlobalConst);
-   }
+    PyObject* pModule = Py_InitModule("sim_control", PyControlMethods);
+
+    {
+        PyObject* pGlobalConst = PyInt_FromLong(SIM_OPT_INSTRUMENT_DETAILED);
+        PyObject_SetAttrString(pModule, "DETAILED", pGlobalConst);
+        Py_DECREF(pGlobalConst);
+    }
    {
       PyObject *pGlobalConst = PyInt_FromLong(SIM_OPT_INSTRUMENT_WARMUP);
       PyObject_SetAttrString(pModule, "WARMUP", pGlobalConst);

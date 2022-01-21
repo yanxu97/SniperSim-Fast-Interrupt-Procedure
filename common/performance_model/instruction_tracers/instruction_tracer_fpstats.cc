@@ -27,6 +27,7 @@ InstructionTracerFPStats::InstructionTracerFPStats(const Core *core)
    {
       registerStatsMetric("instruction_tracer", core->getId(), fp_iclasses[iclass2index[iclass->first]], &(iclass->second));
    }
+   std::cerr << "instruction_tracer_fpstats.cc: CREEPY MOVEMENT: InstructionTracerFPStats" << std::endl;
 }
 
 void InstructionTracerFPStats::init()
@@ -36,6 +37,7 @@ void InstructionTracerFPStats::init()
       // registerStat requires static const names
       ThreadStatNamedStat::registerStat(fp_iclasses[i], "instruction_tracer", fp_iclasses[i]);
    }
+   std::cerr << "instruction_tracer_fpstats.cc: CREEPY MOVEMENT: init" << std::endl;
 }
 
 void InstructionTracerFPStats::traceInstruction(const DynamicMicroOp *uop, uop_times_t *times)
