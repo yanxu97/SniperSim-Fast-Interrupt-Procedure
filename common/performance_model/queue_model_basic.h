@@ -15,8 +15,9 @@ public:
    SubsecondTime computeQueueDelay(SubsecondTime pkt_time, SubsecondTime processing_time, core_id_t requester = INVALID_CORE_ID);
 
 private:
-   SubsecondTime m_queue_time;
-   MovingAverage<SubsecondTime>* m_moving_average;
+    UInt64 counter_sim = 0;
+    SubsecondTime m_queue_time;
+    MovingAverage<SubsecondTime>* m_moving_average;
 };
 
 #endif /* __QUEUE_MODEL_BASIC_H__ */

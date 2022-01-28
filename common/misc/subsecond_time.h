@@ -89,20 +89,41 @@ public:
 
     SubsecondTime& operator=(const SubsecondTime& rhs)
     {
+        // std::cerr << "[IAN's TESTING] subsecond_time.h: CREEPY MOVEMENT: operator=, m_time = rhs.m_time;, SubsecondTime&" << std::endl;
+
         m_time = rhs.m_time;
+
+        // std::cerr << "+++ 1111111111111111111111111111111111 +++" << std::endl;
+        // std::cerr << "!!!!!!!  " << m_time << std::endl;
+        // std::cerr << "argument: " << rhs.m_time << std::endl;
+
         return *this;
     }
 
     // From http://www.stackoverflow.com/questions/4421706
     SubsecondTime& operator+=(const SubsecondTime& rhs)
     {
+        // std::cerr << "[IAN's TESTING] subsecond_time.h: CREEPY MOVEMENT: operator+=, m_time += rhs.m_time;, SubsecondTime&" << std::endl;
+
         m_time += rhs.m_time;
+
+        // std::cerr << "+++ 2222222222222222222222222222222222 +++" << std::endl;
+        // std::cerr << "!!!!!!!  " << m_time << std::endl;
+        // std::cerr << "argument: " << rhs.m_time << std::endl;
+
         return *this;
     }
     // From http://www.stackoverflow.com/questions/4421706
     SubsecondTime& operator-=(const SubsecondTime& rhs)
     {
+        // std::cerr << "[IAN's TESTING] subsecond_time.h: CREEPY MOVEMENT: operator-=, m_time -= rhs.m_time;, SubsecondTime&" << std::endl;
+
         m_time -= rhs.m_time;
+
+        // std::cerr << "+++ 3333333333333333333333333333333333 +++" << std::endl;
+        // std::cerr << "!!!!!!!  " << m_time << std::endl;
+        // std::cerr << "argument: " << rhs.m_time << std::endl;
+
         return *this;
     }
 
@@ -117,7 +138,14 @@ public:
     template <class T>
     SubsecondTime& operator*=(T rhs)
     {
+        // std::cerr << "[IAN's TESTING] subsecond_time.h: CREEPY MOVEMENT: operator-=, m_time -= rhs.m_time;, SubsecondTime&" << std::endl;
+
         m_time *= rhs;
+
+        // std::cerr << "+++ 4444444444444444444444444444444444 +++" << std::endl;
+        // std::cerr << "!!!!!!!  " << m_time << std::endl;
+        // std::cerr << "argument: " << rhs << std::endl;
+
         return *this;
     }
 
@@ -164,12 +192,16 @@ public:
     // From http://www.stackoverflow.com/questions/4421706
     SubsecondTime& operator*=(const SubsecondTime& rhs)
     {
+        // std::cerr << "+++ 5555555555555555555555555555555555 +++" << std::endl;
+
         m_time *= rhs.m_time;
         return *this;
     }
     // From http://www.stackoverflow.com/questions/4421706
     SubsecondTime& operator/=(const SubsecondTime& rhs)
     {
+        // std::cerr << "+++ 6666666666666666666666666666666666 +++" << std::endl;
+
         m_time /= rhs.m_time;
         return *this;
     }
@@ -177,24 +209,32 @@ public:
     // but as we would like to enforce protection, we make them member functions
     inline SubsecondTime operator*(const SubsecondTime& rhs)
     {
+        // std::cerr << "+++ 7777777777777777777777777777777777 +++" << std::endl;
+
         SubsecondTime new_time;
         new_time.m_time = this->m_time * rhs.m_time;
         return new_time;
     }
     inline SubsecondTime operator*(float rhs)
     {
+        // std::cerr << "+++ 8888888888888888888888888888888888 +++" << std::endl;
+
         SubsecondTime new_time;
         new_time.m_time = this->m_time * rhs;
         return new_time;
     }
     inline SubsecondTime operator/(const SubsecondTime& rhs)
     {
+        // std::cerr << "+++ 9999999999999999999999999999999999 +++" << std::endl;
+
         SubsecondTime new_time;
         new_time.m_time = this->m_time / rhs.m_time;
         return new_time;
     }
     inline SubsecondTime operator%(const SubsecondTime& rhs)
     {
+        // std::cerr << "+++ 1010101010101010101010101010101010 +++" << std::endl;
+
         SubsecondTime new_time;
         new_time.m_time = this->m_time % rhs.m_time;
         return new_time;
@@ -312,6 +352,9 @@ public:
 
     void setPeriodFromFreqHz(uint64_t freq_in_hz)
     {
+        std::cerr << "[IAN's TESTING] BEGIN in subsecond_time.h: ComponentPeriod: setPeriodFromFreqHz" << std::endl;
+        std::cerr << "------ " << freq_in_hz << " ------" << std::endl;
+
         m_period = SubsecondTime::SEC() / freq_in_hz;
     }
 
@@ -319,6 +362,8 @@ public:
 
     UInt64 getPeriodInFreqMHz(void) const
     {
+        std::cerr << "[IAN's TESTING] BEGIN in subsecond_time.h: ComponentPeriod: getPeriodInFreqMHz" << std::endl;
+        std::cerr << "------ " << SubsecondTime::US_1 / m_period.m_time << " ------" << std::endl;
         return SubsecondTime::US_1 / m_period.m_time;
     }
 
@@ -549,20 +594,49 @@ inline std::ostream& operator<<(std::ostream& os, const ComponentLatency& latenc
 //  but aren't sure if you'd like to commit them directly to this component yet.
 class ComponentTime {
 public:
+    ComponentTime()
+        : m_period(static_cast<const ComponentPeriod*>(0))
+        , m_time(SubsecondTime::Zero())
+    {
+    }
+    SubsecondTime threshold = SubsecondTime::FS(200);
+    SubsecondTime count_down = SubsecondTime::Zero();
+    SubsecondTime offset = SubsecondTime::Zero();
+    uint64_t count_interrupt = 0;
+    uint64_t interrupt_ready = 0;
+
     // For adding cycles to this component
     // The resulting amount of time will depend on the current frequency
     //  this component is set to
-    void addCycleLatency(uint64_t num_cycles)
+    void
+    addCycleLatency(uint64_t num_cycles)
     {
         m_time += (static_cast<SubsecondTime>(*m_period) * num_cycles);
     }
     // This is for adding time that is not necessarily measured by the base component frequency
     void addLatency(SubsecondTime time_to_add)
     {
+        interrupt_ready = 0;
         m_time += time_to_add;
+        SubsecondTime temp = SubsecondTime::FS(SubsecondTime::divideRounded(time_to_add, *m_period)) + offset;
         if (time_to_add != SubsecondTime::Zero()) {
             std::cerr << "[IAN's TESTING] subsecond_time.h: CREEPY MOVEMENT: addLatency" << std::endl;
             std::cerr << "!!!!!!!  " << m_time << std::endl;
+            std::cerr << "Current frequency: " << SubsecondTime::divideRounded(SubsecondTime::SEC(1), *m_period) << std::endl;
+            std::cerr << "Current period: " << getPeriod() << std::endl;
+            std::cerr << "Current cycle count: " << SubsecondTime::divideRounded(time_to_add, *m_period) << std::endl;
+            std::cerr << "Total cycle count: " << getCycleCount() << std::endl;
+
+            while (temp >= threshold) {
+                temp -= threshold;
+                // The number of interrupts will be used in verification.
+                count_interrupt++;
+                // should implement: trigger the interrupt handler in the pin tool
+                interrupt_ready = 1;
+            }
+            offset = temp;
+            interrupt_ready = 0;
+            std::cerr << "Total interrupt count: " << count_interrupt << std::endl;
         }
     }
     void addLatency(const ComponentTime& time_to_add)
@@ -574,29 +648,50 @@ public:
             std::cerr << "!!!!!!!  " << m_time << std::endl;
         }
     }
+
+    uint64_t get_interrupt_ready(void) const
+    {
+        return interrupt_ready;
+    }
+
     // We can skip the function names and use operators because this is the default
     // and expected case.  The time scale bases should be verified to be the same
     // From http://www.stackoverflow.com/questions/1751869
-    ComponentTime& operator+=(const ComponentTime& rhs)
+    ComponentTime&
+    operator+=(const ComponentTime& rhs)
     {
         assert(rhs.m_period == this->m_period);
+        // std::cerr << "[IAN's TESTING] subsecond_time.h: CREEPY MOVEMENT: operator+=, m_time += rhs.m_time;" << std::endl;
+        // std::cerr << "--- 1111111111111111111111111111111111 +++" << std::endl;
+
         m_time += rhs.m_time;
         return *this;
     }
     ComponentTime& operator+=(const SubsecondTime& rhs)
     {
+        // std::cerr << "[IAN's TESTING] subsecond_time.h: CREEPY MOVEMENT: operator+=, m_time += rhs;" << std::endl;
+        // std::cerr << "+++ 1212121212121212121212121212121212 +++" << std::endl;
+
         m_time += rhs;
         return *this;
     }
     ComponentTime operator+(const SubsecondTime& rhs)
     {
+        // std::cerr << "[IAN's TESTING] subsecond_time.h: CREEPY MOVEMENT: operator+, result.addLatency(rhs);" << std::endl;
+        // std::cerr << "+++ 1313131313131313131313131313131313 +++" << std::endl;
+
         ComponentTime result(*this);
+
         result.addLatency(rhs);
         return result;
     }
     ComponentTime operator+(uint64_t rhs)
     {
+        // std::cerr << "[IAN's TESTING] subsecond_time.h: CREEPY MOVEMENT: operator+, result.addCycleLatency(rhs);" << std::endl;
+        // std::cerr << "+++ 1414141414141414141414141414141414 +++" << std::endl;
+
         ComponentTime result(*this);
+
         result.addCycleLatency(rhs);
         return result;
     }
@@ -653,12 +748,11 @@ public:
 private:
     const ComponentPeriod* m_period;
     SubsecondTime m_time;
-
-    ComponentTime()
-        : m_period(static_cast<const ComponentPeriod*>(0))
-        , m_time(SubsecondTime::Zero())
-    {
-    }
+    // ComponentTime()
+    //     : m_period(static_cast<const ComponentPeriod*>(0))
+    //     , m_time(SubsecondTime::Zero())
+    // {
+    // }
 };
 
 inline std::ostream& operator<<(std::ostream& os, const ComponentTime& time)

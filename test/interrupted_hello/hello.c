@@ -24,7 +24,7 @@ int main(void)
     // start = rdtsc();
 
     // struct timeval start, end;
-    // gettimeofday(&start, NULL);
+    // gettimeofday(&steart, NULL);
 
     SimRoiStart();
     SimNamedMarker(1, "begin");

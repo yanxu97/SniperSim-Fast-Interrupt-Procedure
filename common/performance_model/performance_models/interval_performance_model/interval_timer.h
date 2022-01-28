@@ -61,31 +61,32 @@ protected:
    uint64_t getMaxProducerExecTime(Windows::WindowEntry& instruction);
 
 private:
+    UInt64 counter_sim = 0;
 
-   Core *m_core;
-   const CoreModel *m_core_model;
+    Core* m_core;
+    const CoreModel* m_core_model;
 
-   // Interval model parameters
-   const uint32_t m_dispatch_width;
-   const uint32_t m_branch_misprediction_penalty;
-   UInt64 m_mem_dep_mask; // Memory access dependency granularity
-   UInt64 m_lll_dep_mask; // Memory access dependency granularity for long-latency loads
+    // Interval model parameters
+    const uint32_t m_dispatch_width;
+    const uint32_t m_branch_misprediction_penalty;
+    UInt64 m_mem_dep_mask; // Memory access dependency granularity
+    UInt64 m_lll_dep_mask; // Memory access dependency granularity for long-latency loads
 
-   // State of previous cycle
-   FixedPoint m_remaining_dispatch_bandwidth;
+    // State of previous cycle
+    FixedPoint m_remaining_dispatch_bandwidth;
 
-   // For LOCKed instructions, we need to determine the latency of all loads and stores
-   // (even independent ones), as strong ordering requires that we complete them
-   // before executing the instruction itself.
-   uint64_t m_max_store_completion_time;
-   uint64_t m_max_load_completion_time;
+    // For LOCKed instructions, we need to determine the latency of all loads and stores
+    // (even independent ones), as strong ordering requires that we complete them
+    // before executing the instruction itself.
+    uint64_t m_max_store_completion_time;
+    uint64_t m_max_load_completion_time;
 
-   ContentionModel m_loadstore_contention;
+    ContentionModel m_loadstore_contention;
 
-   // Window and old window data structure
-   Windows *m_windows;
-   PerformanceModel *m_perf_model;
-   const ComponentPeriod *m_frequency_domain;
+    // Window and old window data structure
+    Windows* m_windows;
+    PerformanceModel* m_perf_model;
+    const ComponentPeriod* m_frequency_domain;
 
 #if DEBUG_IT_INSN_PRINT
    FILE *m_insn_log;

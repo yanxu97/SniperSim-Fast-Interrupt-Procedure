@@ -22,16 +22,17 @@ QueueModelBasic::~QueueModelBasic()
 SubsecondTime
 QueueModelBasic::computeQueueDelay(SubsecondTime pkt_time, SubsecondTime processing_time, core_id_t requester)
 {
-   // Compute the moving average here
-   SubsecondTime ref_time;
-   if (m_moving_average)
-   {
-      ref_time = m_moving_average->compute(pkt_time);
-   }
-   else
-   {
-      ref_time = pkt_time;
-   }
+    std::cerr << "[IAN's TESTING] queue_model_basic.cc: CREEPY MOVEMENT: computeQueueDelay" << std::endl;
+    counter_sim++;
+    std::cerr << "counter_sim : " << counter_sim << std::endl;
+
+    // Compute the moving average here
+    SubsecondTime ref_time;
+    if (m_moving_average) {
+        ref_time = m_moving_average->compute(pkt_time);
+    } else {
+        ref_time = pkt_time;
+    }
 
    SubsecondTime queue_delay = (m_queue_time > ref_time) ? (m_queue_time - ref_time) : SubsecondTime::Zero();
    if (queue_delay > 10000 * SubsecondTime::NS())

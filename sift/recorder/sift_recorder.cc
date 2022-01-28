@@ -28,13 +28,15 @@
 #include "sift_assert.h"
 #include "pinboost_debug.h"
 
+#include "/home/yxz7776/sniper/common/misc/subsecond_time.h"
+
 // #include "/home/yxz7776/sniper/common/core/core.h"
 // #include "/home/yxz7776/sniper/pin/local_storage.h"
 
 #define MODIFIED
 
 #if defined(MODIFIED)
-static int inst_count = 0;
+// static int inst_count = 0;
 #endif
 
 VOID Fini(INT32 code, VOID* v)
@@ -140,8 +142,11 @@ static VOID InstrumentInstructionByThreshold(
         || (RTN_Name(Parent) != "main"))
         return;
 
-    inst_count++;
-    if (10 != inst_count)
+    // inst_count++;
+    // if (10 != inst_count)
+    //     return;
+    ComponentTime::ComponentTime identifier = new ComponentTime();
+    if (ComponentTime::identifier.get_interrupt_ready() == 0)
         return;
 
     // PerformanceModel* prfmdl = getPerformanceModel();
